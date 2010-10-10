@@ -14,7 +14,7 @@
 
 //Fixes for MinGW
 #ifdef MINGW
-#include <fixmingw.h>
+#include "fixmingw.h"
 #endif
 
 #include "googleChromeUtil.h"
