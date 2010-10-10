@@ -4,7 +4,7 @@
 //
 // by 365days.enjoy#gmail.com 
 //   & alan.ncu#gmail.com          2010.4.14
-// Modified by axus.buy#gmail.com  2010.10.2
+// Modified by axus.web#gmail.com  2010.10.2
 
 #include <iostream>
 #include "json/json.h"
