@@ -5,11 +5,12 @@
 #define sprintf_s sprintf
 #endif
 
-//Count length of wchar_t array by finding null terminator
+//Define wcsnlen if not defined
 #ifndef wcsnlen
 #include <algorithm>
+//Return the number of characters before null terminator in str (or max)
 std::size_t wcsnlen(const wchar_t *str, size_t max) {
-        wchar_t null_value = '\0';
+        wchar_t null_value = L'\0';
         size_t result = 0;
 
         //Check every value in the array for null_value

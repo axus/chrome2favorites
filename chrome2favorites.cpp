@@ -14,7 +14,9 @@
 #include <limits.h>
 
 using std::wcout;
+using std::wcerr;
 using std::endl;
+
 
 int main()
 {
@@ -26,7 +28,7 @@ int main()
 		wcout << L"Could not get Internet Explorer favorites folder" <<endl;
                 return 1;
         }
-	wcout << L"Internet Explorer favorites folder is " <<path <<endl;
+	wcout << L"Favorites folder is " <<path <<endl;
 
         //Check Chrome bookmarks path
 	if(!googleChromeUtil::is_installed_chrome(bkmk))

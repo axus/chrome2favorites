@@ -20,6 +20,7 @@
 #include "googleChromeUtil.h"
 
 using std::wcout;
+using std::wcerr;
 using std::endl;
 using std::flush;
 
@@ -57,8 +58,10 @@ bool mk_folder_obj(std::string id, std::string name, Json::Value& obj)
 #include <shlobj.h>
 #include <shlwapi.h>
 
-//Not used by MinGW!!
+//pragma not used by MinGW!  Use -lshlwapi
+#ifndef MINGW
 #pragma comment(lib, "shlwapi.lib")
+#endif
 
 bool googleChromeUtil::is_installed_chrome(wchar_t * path)
 {
@@ -150,32 +153,37 @@ bool googleChromeUtil::load(const wchar_t *file_path)
 // the user must make sure that the url_obj is a url.
 void googleChromeUtil::export_url(Json::Value& url_obj, const wchar_t* path)
 {
+
         //Ignore empty URLs
         if (url_obj.empty() || url_obj["type"].asString() !=std::string("url"))
                 return ;
 
         //Convert URL name to wide character
 	std::string name=url_obj["name"].asString();
-	wchar_t *wname = new wchar_t[name.length()]; wname[0] = '\0';
+	wchar_t *wname = new wchar_t[name.length() + 1]; wname[0] = '\0';
 	convert_utf8_2_wchar(name.c_str(), wname);
 	
 	//Create wchar array for complete file path + name
 	wchar_t *file = new wchar_t[PATH_MAX + name.length() + 8]; file[0] = '\0';
 	
 	//Concatenate PATH + \ + NAME + .url
-	lstrcpynW(file, path, PATH_MAX - 1);
+	lstrcpynW(file, path, wcsnlen(path, PATH_MAX - 1) + 1);
 	lstrcatW(file, L"\\");
 	lstrcatW(file, wname);
 	lstrcatW(file, L".url");
+
 	
 	//Create wchar array for URL
 	std::string http=url_obj["url"].asString();
 	wchar_t *url = new wchar_t[http.length() + 1]; url[0] = '\0';
 	convert_utf8_2_wchar(http.c_str(), url);
 
+
         //Write .ini style URL file
         WritePrivateProfileStringW(L"InternetShortcut", L"URL", url , file);    
-        
+
+
+   
         //Clean up those arrays we created!
         delete file; delete wname; delete url;
 }
@@ -184,9 +192,9 @@ void googleChromeUtil::export_url(Json::Value& url_obj, const wchar_t* path)
 void googleChromeUtil::export_folder(Json::Value& folder_obj, const wchar_t* path)
 {
 
-        //Ignore empty folder names
-	if (folder_obj.empty() || folder_obj["type"].asString() !=std::string("folder"))
-		return ;
+        //Ignore empty folder names and non-folders
+	if (folder_obj.empty() || folder_obj["type"].asString() != std::string("folder"))
+		return;
 
         //The Favorites folder we create can't be longer than PATH_MAX characters
         size_t maxFolderLength = PATH_MAX - 1 - wcsnlen(path, PATH_MAX - 3);
@@ -196,9 +204,9 @@ void googleChromeUtil::export_folder(Json::Value& folder_obj, const wchar_t* pat
 	wchar_t *folder_name = new wchar_t[maxFolderLength + 1]; folder_name[0] = '\0';
 	convert_utf8_2_wchar(folder.c_str(), folder_name);
 
-        // Create new directory for folder
+	// Create new_path string (including NULL terminator!)
 	wchar_t new_path[PATH_MAX]={0};
-	lstrcpynW(new_path, path, wcsnlen(path, PATH_MAX - 3));
+	lstrcpynW(new_path, path, wcsnlen(path, PATH_MAX - 3) + 1);
 	lstrcatW(new_path, L"\\");
 	lstrcatW(new_path, folder_name);
 
@@ -210,6 +218,7 @@ void googleChromeUtil::export_folder(Json::Value& folder_obj, const wchar_t* pat
 	int count=arr.size();
 	for (int i=0; i<count; ++i)
 	{
+
 		Json::Value new_val=arr[i];
 		if (new_val["type"].asString()==std::string("url"))
 		{
@@ -220,10 +229,10 @@ void googleChromeUtil::export_folder(Json::Value& folder_obj, const wchar_t* pat
 			export_folder(new_val, new_path);
 		}
 	}
-	
 }
 
 //Export the Chrome Bookmarks to a folder
+// folder_path is full Windows pathname to Favorites folder
 bool googleChromeUtil::export_2_folder(const wchar_t* folder_path)
 {
     if (!folder_path || chrome_.empty())
@@ -231,11 +240,33 @@ bool googleChromeUtil::export_2_folder(const wchar_t* folder_path)
    
 	Json::Value roots=chrome_["roots"];
 	
-	//Export "Bookmarks bar"
+	//Export "Bookmarks bar" to a subfolder
 	export_folder(roots["bookmark_bar"], folder_path);
 	
-	//Export "Other Bookmarks"
-	export_folder(roots["other"], folder_path);
+	//Export "Other Bookmarks" to Favorites
+        // iterate through to export.
+	Json::Value arr=roots["other"]["children"];
+		
+	size_t index;
+        size_t num_children=arr.size();
+	for (index=0; index < num_children; index++)
+	{
+		Json::Value new_val=arr[index];
+                //Export URL if type="url"
+		if (new_val["type"].asString()==std::string("url"))
+		{
+			export_url(new_val, folder_path);
+		}
+		//Export folder if type="folder"
+		else if(new_val["type"].asString()==std::string("folder"))
+		{
+			export_folder(new_val, folder_path);
+		}
+		//Else, ignore it
+	}
+
+        //This exports "other" to a separate folder, instead of straight to Favorites	
+	//export_folder(roots["other"], folder_path);
 
 	return true;
 }
