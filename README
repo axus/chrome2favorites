@@ -1,0 +1,20 @@
+chrome2favorites: Convert Chrome bookmarks file to IE Favorites.
+
+This project is derived from the original 
+http://www.codeproject.com/KB/shell/export_chrome_bookmarks.aspx
+By: Alan_Zhang and 365days.enjoy
+
+I changed it to build in MSYS/MinGW, and removed a couple crashes.
+I removed the original Visual Studio project file, since I don't use MSVC.
+You could obtain it from the original project.
+
+It depends on jsoncpp, which can be found here:
+http://sourceforge.net/projects/jsoncpp/
+
+The original project is licensed under the Code Project Open License:
+http://www.codeproject.com/info/cpol10.aspx
+CPOL is similar to releasing in the public domain.
+
+This derivative work is also licensed to you under the Code Project Open License.
+
+See my tutorials at: https://sites.google.com/site/axusdev/
