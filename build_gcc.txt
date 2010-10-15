@@ -1,0 +1,127 @@
+[Building GCC 4.5.0]
+
+The GCC standard C++ library (libstdc++) and the GCC library (libgcc) are
+distributed under the LGPL. If these libraries are distributed in shared
+library form, such as a DLL, their source code must be included.
+
+If you are distributing programs built with MinGW, it is a good idea to include
+these DLLs and distribute their source. Otherwise, you must statically link
+them with --static-libgcc and --static-libstdc++.
+
+The source package prepared by MinGW has a build script to make the process
+easier.  It runs the initial configuration with the correct options.  You can
+edit pkgbuild.ini to change them.
+
+The GCC build process goes through 3 stages:
+*Stage 1: Build a GCC compiler and libraries with whatever your current compiler is.
+
+*Stage 2: Build GCC and libraries using your configuration options, with the
+        stage 1 compiler.
+
+*Stage 3: Build GCC using stage 2 compiler, compare itself to the stage 2 compiler,
+        and build libraries.
+
+See the official GCC Build page for more information about the build process.
+
+[Prerequisites]
+
+Install MSYS with MSYS developer package selected.
+Install 7zip.
+Install required libraries:
+  mingw-get install msys-dvlpr
+  mingw-get install gmp mpc mpfr pthreads
+Copy the "startup file" objects to where GCC looks for them:
+  cp /mingw/lib/dllcrt2.o /mingw/mingw32/lib/
+  cp /mingw/lib/crt*.o /mingw/mingw32/lib/
+
+[Download gcc source]
+
+Download MinGW's GCC source package from SourceForge: Version 4.5.0-1
+Open the the .lzma file with 7zip, and double-click the .tar file inside 7zip.
+Extract to $HOME/gccbuild/
+
+[Optimizing Windows]
+
+A GCC compile heavily uses the CPU and disk.
+Some of these steps might let you compile faster:
+  Turn off special effects in "Control Panel" > "System" > "Advanced" > "Perfomance Settings".
+  Close all unnecessary programs.
+  For each hard drive properties, uncheck "Allow files on this drive to have contents indexed".
+    Windows XP: Run services.msc, stop "Indexing Service", and disable it.
+    Windows Vista/7: Run services.msc, stop "Windows Search", and disable it.
+  Configure your Windows antivirus software to ignore $HOME/gccbuild .
+
+[Run build script]
+
+The build script takes a long time to run. Plan to do something else while GCC is compiling.  Check it after 30-60 minutes for any errors.  Estimated build time is two to five hours.
+  Edit pkgbuild.ini
+  Change the --enable-languages option to just C and C++
+    "--enable-languages=c,c++ \"
+  Start the MinGW Shell
+  cd gccbuild
+  pkgbuild
+    Source extraction speed depends on your hard drive speed.  5 minutes to 1 hour.
+    Initial "configure" step took about 5 minutes.
+    "configure" and "make" is run for each subfolder, in 3 stages.
+    If you made a mistake setting up, errors can occur anytime in the first stage.
+
+[Fixing errors]
+
+I had errors because I was missing prerequisites, and didn't copy the *crt*.o
+files to /mingw/mingw32/lib/.
+
+If you have errors, look for the last "config.log" created in the build tree.  Then:
+  Fix the error
+  cd $HOME/gccbuild/build
+  make
+    
+Error: "cannot find dllcrt2.o: No such file or directory"
+Solution:  Copy the missing startup files objects to /mingw/mingw32/lib/
+
+Error: "../../gcc-4.5.0/gcc/ada/gcc-interface/Make-lang.in:606: *** multiple target patterns.  Stop."
+Solution:  mingw-get install gcc-ada, remove ada from pkgbuild.ini
+
+Error: "configure: error: in `/c/dev/axus/gccbuild/build/mingw32/libgomp':
+        configure: error: C compiler cannot create executables"
+Solution:  cp /mingw/lib/crt2.o /mingw/mingw32/lib/
+
+Error: "mv: cannot move `mingw32' to `stage1-mingw32': Permission denied"
+Solution:  Close files and directories you've opened from the "build" folder tree.
+
+Error: "configure: error: Building GCC requires GMP 4.2+, MPFR 2.3.1+ and MPC 0.8.0+"
+Solution:  
+    rm -rf build
+    mingw-get install gmp mpfr mpc
+    pkgbuild    #Yes, it has to extract all over again!                    
+
+[After the build completes]
+
+The final output from the build should be:
+  "make[1]: Leaving directory `/d/dev/gcc/build'"
+
+Undo any Windows optimizations that you did against your better judgement.
+
+The libgcc DLL was created here:
+$HOME/gccbuild/build/mingw32/libgcc/shlib/libgcc_s_dw2-1.dll
+
+The libstdc++ DLL was created here:
+$HOME/gccbuild/build/mingw32/libstdc++-v3/.libs/libstdc++-6.dll
+
+[Install]
+
+If you want to install your new GCC, run "make install".  You may distribute
+anything created under "gccbuild" if you can provide source and build
+instructions.  This will overwrite installed MinGW files with your own compiled
+versions.
+
+To revert back to the original DLL versions, run "mingw-get install libgcc libstdc++"
+
+My compiled libstdc++-6.dll was over 6MB.  The version included with MinGW is
+only 860KB.  However, my libgcc_s_dw2-1.dll and the MinGW version were both
+108032 bytes.  They were not identical.
+
+[Build times]
+
+Windows XP laptop (Core 2 Duo): About 5 hours
+Windows Vista laptop (Core 2 Duo): 2.5 hours
+Windows 7 desktop (i5-750, SSD): 2.5 hours, including fixing and rerunning "make"!
