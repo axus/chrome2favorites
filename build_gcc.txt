@@ -2,7 +2,7 @@
 
 The GCC standard C++ library (libstdc++) and the GCC library (libgcc) are
 distributed under the LGPL. If these libraries are distributed in shared
-library form, such as a DLL, their source code must be included.
+library form, such as a DLL, their source code must be made available.
 
 If you are distributing programs built with MinGW, it is a good idea to include
 these DLLs and distribute their source. Otherwise, you must statically link
