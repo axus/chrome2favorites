@@ -4,12 +4,18 @@ This project is derived from the original
 http://www.codeproject.com/KB/shell/export_chrome_bookmarks.aspx
 By: Alan_Zhang and 365days.enjoy
 
-I changed it to build in MSYS/MinGW, and removed a couple crashes.
-I removed the original Visual Studio project file, since I don't use MSVC.
-You could obtain it from the original project.
 
-It depends on jsoncpp, which can be found here:
+I changed it to build in MSYS/MinGW, removed a couple crashes, and got rid of
+some unnecessary directory structure.
+
+Scripts for building the project:
+build-msys.sh = Windows with MinGW + MSYS
+
+chrome2favorites depends on jsoncpp, which can be found here:
 http://sourceforge.net/projects/jsoncpp/
+
+Chrome2Favorites.exe also depends on MinGW/GCC shared libraries. See 
+build_gcc.txt.
 
 The original project is licensed under the Code Project Open License:
 http://www.codeproject.com/info/cpol10.aspx

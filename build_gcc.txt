@@ -1,3 +1,13 @@
+[Software]
+libgcc_s_dw2-1.dll
+libstdc++-6.dll
+
+[License]
+See COPYING.LIB
+
+[Where to obtain source code]
+http://sourceforge.net/projects/mingw/files/MinGW/BaseSystem/GCC/Version4/gcc-4.5.0-1/gcc-4.5.0-1-mingw32-src.tar.lzma/download
+
 [Building GCC 4.5.0]
 
 The GCC standard C++ library (libstdc++) and the GCC library (libgcc) are
@@ -27,7 +37,7 @@ See the official GCC Build page for more information about the build process.
 
 Install MSYS with MSYS developer package selected.
 Install 7zip.
-Install required libraries:
+Install required libraries, using these commands:
   mingw-get install msys-dvlpr
   mingw-get install gmp mpc mpfr pthreads
 Copy the "startup file" objects to where GCC looks for them:
@@ -53,11 +63,18 @@ Some of these steps might let you compile faster:
 
 [Run build script]
 
-The build script takes a long time to run. Plan to do something else while GCC is compiling.  Check it after 30-60 minutes for any errors.  Estimated build time is two to five hours.
+The build script takes a long time to run. Plan to do something else while GCC
+is compiling.  Check it after 30-60 minutes for any errors.  Estimated build
+time is two to five hours.
+
   Edit pkgbuild.ini
   Change the --enable-languages option to just C and C++
     "--enable-languages=c,c++ \"
+
   Start the MinGW Shell
+
+  Install any missing pre-requisities
+
   cd gccbuild
   pkgbuild
     Source extraction speed depends on your hard drive speed.  5 minutes to 1 hour.
@@ -109,10 +126,8 @@ $HOME/gccbuild/build/mingw32/libstdc++-v3/.libs/libstdc++-6.dll
 
 [Install]
 
-If you want to install your new GCC, run "make install".  You may distribute
-anything created under "gccbuild" if you can provide source and build
-instructions.  This will overwrite installed MinGW files with your own compiled
-versions.
+If you want to install your new GCC, run "make install".
+This will overwrite some installed MinGW files with your own compiled versions.
 
 To revert back to the original DLL versions, run "mingw-get install libgcc libstdc++"
 
