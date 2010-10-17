@@ -26,14 +26,14 @@ using std::flush;
 
 bool mk_url_obj(std::string id, std::string name, std::string url, Json::Value& obj)
 {
-	char fomat[]=" {\
+	char format[]=" {\
 		\"date_added\": \"0\",\
 		\"id\": \"%s\",\
 		\"name\": \"%s\",\
 		\"type\": \"url\",\
 		\"url\": \"%s\"}";
 	char sto[1000];
-	sprintf_s(sto, fomat, id.c_str(), name.c_str(), url.c_str());
+	sprintf_s(sto, format, id.c_str(), name.c_str(), url.c_str());
 	Json::Reader reader;
 	obj.clear();
 	return reader.parse(sto,obj);	
@@ -158,8 +158,14 @@ void googleChromeUtil::export_url(Json::Value& url_obj, const wchar_t* path)
         if (url_obj.empty() || url_obj["type"].asString() !=std::string("url"))
                 return ;
 
-        //Convert URL name to wide character
+        //Replace invalid Windows filename characters
 	std::string name=url_obj["name"].asString();
+	size_t charpos;
+	while ( (charpos = name.find_first_of("/\\?*:<>|\"")) != string::npos) {
+                name[charpos] = '-';
+        }
+
+        //Convert URL name to wide character
 	wchar_t *wname = new wchar_t[name.length() + 1]; wname[0] = '\0';
 	convert_utf8_2_wchar(name.c_str(), wname);
 	
