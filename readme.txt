@@ -4,8 +4,7 @@ Usage: Chrome2Favorites.exe
 
 Requirements:
         OS: Windows 2000, XP, Vista, 7
-        
-        Files: libgcc_s_dw2-1.dll, libstdc++-6.dll
+        Shared libraries: libgcc_s_dw2-1.dll, libstdc++-6.dll
         
 Description:
         Chrome bookmarks are located in %APPDATA%/Local/Google/Chrome/User Data/Default/Bookmarks .
