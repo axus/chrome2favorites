@@ -158,8 +158,10 @@ void googleChromeUtil::export_url(Json::Value& url_obj, const wchar_t* path)
         if (url_obj.empty() || url_obj["type"].asString() !=std::string("url"))
                 return ;
 
-        //Replace invalid Windows filename characters
+        //Get the bookmark name
 	std::string name=url_obj["name"].asString();
+	
+        //Replace invalid Windows filename characters
 	size_t charpos;
 	while ( (charpos = name.find_first_of("/\\?*:<>|\"")) != string::npos) {
                 name[charpos] = '-';
@@ -205,8 +207,16 @@ void googleChromeUtil::export_folder(Json::Value& folder_obj, const wchar_t* pat
         //The Favorites folder we create can't be longer than PATH_MAX characters
         size_t maxFolderLength = PATH_MAX - 1 - wcsnlen(path, PATH_MAX - 3);
 
-        //Get the bookmark folder name, convert to wide characters
+        //Get the bookmark folder name, 
 	std::string folder=folder_obj["name"].asString().substr(0,maxFolderLength);
+	
+        //Replace invalid Windows filename characters
+	size_t charpos;
+	while ( (charpos = folder.find_first_of("/\\?*:<>|\"")) != string::npos) {
+                folder[charpos] = '-';
+        }
+
+        //convert to wide characters
 	wchar_t *folder_name = new wchar_t[maxFolderLength + 1]; folder_name[0] = '\0';
 	convert_utf8_2_wchar(folder.c_str(), folder_name);
 
