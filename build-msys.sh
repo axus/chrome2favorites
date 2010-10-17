@@ -5,4 +5,4 @@
 # To clean project:
 #       build-msys.sh clean
 
-make -f Makefile.MinGW $@
+make -f src/Makefile.MinGW $@

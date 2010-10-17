@@ -16,6 +16,8 @@ SRCFILES=googleChromeUtil.cpp sharefile.cpp chrome2favorites.cpp
 SRCDIR=src
 BUILD=build
 
+
+
 # -mconsole: Create a console application
 # -mwindows: Create a GUI application
 # -Wl,--enable-auto-import: Let the ld.exe linker automatically import from libraries
