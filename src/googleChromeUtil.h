@@ -43,7 +43,7 @@ public:
 	//
 	// export_2_folder
 	//
-	// Purpose:     this function is provided to export all bookmarks to a folder
+	// Purpose: Export all Chrome bookmarks to specified Windows folder
 	//
 	// Parameters:  const wchar_t* folder_path     --- the folder path
 	//
@@ -59,8 +59,10 @@ public:
 	//
 	// Purpose:     to determine if chrome is installed in current OS
 	//
-	// Parameters: wchar_t *     --- if chrome is installed, the parameter get the file path. 
-	//                                                it's the user's responsibility to allocate space, for example:   wchar_t path_out[260]={0};
+	// Parameters: wchar_t *
+    //      if chrome is installed, the parameter get the file path. 
+	//      it's the user's responsibility to allocate space, for example:
+    //          wchar_t path_out[260]={0};
 	//
 	// Returns:   bool
 	//
@@ -82,7 +84,7 @@ private:
 	// Purpose:     export an url to a specific folder path.
 	//
 	// Parameters: Json::Value&       ---  it must be an url object value. 
-	//                       const wchar_t*   ---  the folder path to export.
+	//               const wchar_t*   ---  the folder path to export.
 	//
 	// Returns:   void
 	//
@@ -100,6 +102,19 @@ private:
 	// Returns:   void
 	//
 	void export_folder(Json::Value& folder_obj, const wchar_t* path);
+
+	///////////////////////////////////////////////////////////////////
+	//
+	// export_url
+	//
+	// Purpose:     export contents of folder object but not folder
+	//
+	// Parameters: Json::Value&       ---  it must be an folder object value. 
+	//                       const wchar_t*   ---  the folder path to export.
+	//
+	// Returns:   void
+	//
+	void export_folder_content(Json::Value& folder_obj, const wchar_t* path);
 
 	Json::Value chrome_;
 };

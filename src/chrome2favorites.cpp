@@ -4,7 +4,7 @@
 //
 // by 365days.enjoy#gmail.com 
 //   & alan.ncu#gmail.com          2010.4.14
-// Modified by axus.web#gmail.com  2010.10.2
+// Modified by axus.web#gmail.com  2010.10.2 - 2011.1.16
 
 #include <iostream>
 #include "json/json.h"
@@ -33,9 +33,9 @@ int main()
         //Check Chrome bookmarks path
 	if(!googleChromeUtil::is_installed_chrome(bkmk))
 	{
-                // You could substitute a filename here if you wanted to update this ;p
-                wcout<<L"Chrome bookmarks file not found" << endl;
-                return 1;
+        // You could substitute a filename here if you wanted to update this ;p
+        wcout<<L"Chrome bookmarks file not found" << endl;
+        return 1;
 	}
 	wcout<<L"Chrome bookmarks file is "<<bkmk<<endl;
 
@@ -43,12 +43,12 @@ int main()
 	//lstrcatW(path, L"\\Google chrome"); 
 	//CreateDirectoryW(path, NULL);
 
-        //Perform the import and export
+    //Perform the import and export
 	googleChromeUtil obj;
 	obj.load(bkmk);              
 	obj.export_2_folder(path);
 
-        //Complete!
-        wcout<<L"Complete!"<<endl;
-        return 0;
+    //Complete!
+    wcout<<L"Complete!"<<endl;
+    return 0;
 }
