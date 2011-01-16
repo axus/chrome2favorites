@@ -15,8 +15,9 @@ distributed under the LGPL. If these libraries are distributed in shared
 library form, such as a DLL, their source code must be made available.
 
 If you are distributing programs built with MinGW, it is a good idea to include
-these DLLs and distribute their source. Otherwise, you must statically link
-them with --static-libgcc and --static-libstdc++.
+these DLLs and distribute their source. Do not statically link with
+--static-libgcc and --static-libstdc++, as you MUST distribute your software
+using the GNU Public License... which is incompatible with the COPL I think.
 
 The source package prepared by MinGW has a build script to make the process
 easier.  It runs the initial configuration with the correct options.  You can
