@@ -66,6 +66,8 @@ bool mk_folder_obj(std::string id, std::string name, Json::Value& obj)
 bool googleChromeUtil::is_installed_chrome(wchar_t * path)
 {
 	wchar_t path_out[PATH_MAX]={0};
+	
+	//Get APP_DATA
 	SHGetSpecialFolderPathW(NULL, path_out, CSIDL_APPDATA, FALSE);
 	wchar_t *pt=wcsrchr(path_out, L'\\');
 	if (pt)
@@ -73,18 +75,52 @@ bool googleChromeUtil::is_installed_chrome(wchar_t * path)
 	   *pt=L'\0';
 	}
 
+    //Examine %APPDATA%/Local/Google/Chrome/User Data/Default/Bookmarks
 	lstrcatW(path_out, L"\\Local\\Google\\Chrome\\User Data\\Default\\Bookmarks");
 	BOOL ok= PathFileExistsW(path_out);	
 	if (ok)
 	{
+        //Delete end of path if it's too long
 		if (lstrlenW(path_out)>8)
 		{
 			lstrcpynW(path, path_out, PATH_MAX - 1);
 			return true;
 		}
 		return true;
-	}
-	return false;
+	} else {
+      
+        //Warning message
+        //wcout << L"Not in " << path_out << endl;
+      
+        //Get LOCAL_APPDATA instead
+	   SHGetSpecialFolderPathW(NULL, path_out, CSIDL_LOCAL_APPDATA, FALSE);
+       //Examine %LOCAL_APPDATA%/Local Settings/Application Data/Google/Chrome/User Data/Default
+       lstrcatW(path_out, L"\\Google\\Chrome\\User Data\\Default\\Bookmarks");
+	   
+       BOOL ok= PathFileExistsW(path_out);	
+       if (ok)
+       {
+            if (lstrlenW(path_out)>8)
+            {
+                lstrcpynW(path, path_out, PATH_MAX - 1);
+                return true;
+            }
+    		return true;
+       }
+       wcout << L"Not in " << path_out << endl;
+	   return false;
+	   
+       //Get USERPROFILE instead
+	   //SHGetSpecialFolderPathW(NULL, path_out, CSIDL_PROFILE, FALSE);
+	   // //Delete end of path
+	   //if ((pt=wcsrchr(path_out, L'\\')))
+	   //{
+       //     *pt=L'\0';
+	   //}
+       //Examine %USERPROFILE%/Local Settings/Google/Chrome/User Data/Default
+       //lstrcatW(path_out, L"\\Local Settings\\Google\\Chrome\\User Data\\Default\\Bookmarks");
+	   
+    }
 }
 
 bool googleChromeUtil::is_chrome_running()
